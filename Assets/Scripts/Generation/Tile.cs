@@ -103,7 +103,7 @@ public class Tile : MonoBehaviour
         switch (state)
         {
             case State.Empty:
-                return  new bool[] { true, true, true, true };
+                return  new bool[] { false, false, false, false };
             case State.Wall2WayHorizontal:
                 return new bool[] { false, false, true, true };
             case State.Wall2WayVertical:

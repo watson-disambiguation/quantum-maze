@@ -14,6 +14,7 @@ public class TextManager : MonoBehaviour
     private List<Button> buttons = new List<Button>();
     private Story story;
     public GameObject scrollList;
+    public RectTransform content;
 
     private void Awake() 
     {
@@ -47,16 +48,16 @@ public class TextManager : MonoBehaviour
 
     void ContinueStory()
     {
-        //Debug.Log("Continuing the story.");
+        Debug.Log("Continuing the story.");
         PrintStory();
-        //Debug.Log("Continuing the story.");
+        Debug.Log("Continuing the story.");
         var Choices = story.currentChoices;
         if (Choices.Count > 0)
         {
-            //Debug.Log("There are multiple choices.");
+            Debug.Log("There are multiple choices.");
             foreach (Choice choice in Choices)
             {
-                Button choiceButton = Instantiate(buttonPrefab, this.transform);
+                Button choiceButton = Instantiate(buttonPrefab, content);
                 buttons.Add(choiceButton);
 
                 Text text = choiceButton.GetComponent<Text>();
@@ -68,10 +69,10 @@ public class TextManager : MonoBehaviour
         }
         else
         {
-            //Debug.Log("No Choices, Continuing.");
+            Debug.Log("No Choices, Continuing.");
             if (story.canContinue)
             {
-                Button continueButton = Instantiate(continuePrefab, this.transform);
+                Button continueButton = Instantiate(continuePrefab, content);
                 buttons.Add(continueButton);
                 continueButton.onClick.AddListener(delegate { OnClickChoiceButton(null); });
             }
@@ -84,7 +85,7 @@ public class TextManager : MonoBehaviour
     }
     public void AddTextBox(string text) 
     {
-        var newTextBox = Instantiate(textBox, this.transform);
+        var newTextBox = Instantiate(textBox, content);
         newTextBox.text = text;
         textBoxes.Add(newTextBox);
     }

@@ -54,7 +54,6 @@ public class TravellerController : MonoBehaviour
         float rand = UnityEngine.Random.value;
         if (!alreadySpawned && rand < SpawnProbability)
         {
-            Debug.Log("Spawning");
             SetTileLocation(potentialTile);
         }
     }

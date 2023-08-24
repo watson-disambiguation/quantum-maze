@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private float mapWidth;
     private float mapHeight;
 
-    private void Awake()
+    void Awake()
     {
         if (player == null)
         {
@@ -39,10 +39,7 @@ public class Player : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    void Start()
-    {
+        
         if(cam == null)
         {
             cam = FindObjectOfType<Camera>();

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
+    public GameObject loadConcealer;
     public static TileManager instance;
     [SerializeField]
     private int width, height;
@@ -17,8 +18,6 @@ public class TileManager : MonoBehaviour
 
     [SerializeField]
     private Tile tilePrefab;
-    [SerializeField]
-    private Player player;
 
     private int playerX;
     private int playerY;
@@ -48,12 +47,16 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
     private void Start()
     {
-        if(player == null)
-        {
-            player = FindObjectOfType<Player>();
-        }
         tiles = new Tile[width, height];
         for(int x = 0; x < width; x++)
         {
@@ -69,24 +72,168 @@ public class TileManager : MonoBehaviour
                 tiles[x, y].Init(x, y);
             }
         }
+        
+        InitialUpdateTiles();
     }
 
     private void Update()
     {
-        int intX = Mathf.RoundToInt(player.transform.position.x / 2f);
-        int intY = Mathf.RoundToInt(player.transform.position.y / 2f);
-        float newPlayerRotation = player.getRotation();
+        int intX = Mathf.RoundToInt(Player.player.transform.position.x / 2f);
+        int intY = Mathf.RoundToInt(Player.player.transform.position.y / 2f);
+        float newPlayerRotation = Player.player.getRotation();
         bool isDifferentAngle = Mathf.Abs(newPlayerRotation - playerRotation) > rotationThreshold;
         if (playerX != intX || playerY != intY || isDifferentAngle)
         {
-            playerRotation = player.getRotation();
+            playerRotation = Player.player.getRotation();
             playerX = intX;
             playerY = intY;
             UpdateTiles();
         }
     }
+    
+    // for testing use only!!!
+    private void SetTilesTesting()
+    {
+        tiles[playerX,playerY].SetState(Tile.State.WallEndLeft);
+        tiles[playerX,playerY].Collapse();
+        tiles[playerX + 1,playerY].SetState(Tile.State.WallEndRight);
+        tiles[playerX + 1, playerY].Collapse();
+    }
+
+    private void InitialUpdateTiles()
+    {
+        playerX = Mathf.RoundToInt(Player.player.transform.position.x / 2f);
+        playerY = Mathf.RoundToInt(Player.player.transform.position.y / 2f);
+        playerRotation = Player.player.getRotation();
+        
+        UpdateTiles();
+        bool successful = false;
+        while (!successful)
+        {
+            successful = CheckTiles();
+            Debug.Log(successful);
+            if (successful)
+            {
+                break;
+            }
+            Debug.Log("Failed, trying again");
+            ResetTiles();
+            UpdateTiles();
+        }
+        loadConcealer.SetActive(false);
+    }
+
+    private bool CheckTiles()
+    {
+        float maxDistance = 0;
+        HashSet<Vector2Int> total = new();
+        HashSet<Vector2Int> lastAdded = new();
+        Vector2Int initialPos = new(playerX, playerY);
+        lastAdded.Add(initialPos);
+        total.UnionWith(lastAdded);
+
+        while (lastAdded.Count > 0)
+        {
+            HashSet<Vector2Int> newlyAdded = new();
+            foreach (var pos in lastAdded)
+            {
+                Vector2Int[] neighbours = tiles[pos.x, pos.y].getNeighbours();
+                foreach (var neighbour in neighbours)
+                {
+                    Vector2Int neighbourConstrained = Constrain(neighbour);
+                    bool toAdd = false;
+                    if (tiles[neighbourConstrained.x, neighbourConstrained.y].state != Tile.State.Empty)
+                    {
+                        toAdd = total.Add(neighbourConstrained);
+                    }
+
+                    if (toAdd)
+                    {
+                        newlyAdded.Add(neighbourConstrained);
+                    }
+                    
+                }
+            }
+            
+            lastAdded = newlyAdded;
+        }
+
+        foreach (var pos in total)
+        {
+            float distance = (pos - initialPos).magnitude;
+            if (distance > maxDistance)
+            {
+                maxDistance = distance;
+            }
+        }
+
+        return maxDistance > viewLimitSide;
+
+    }
+
+    public Vector2Int Constrain(Vector2Int pos)
+    {
+        if (pos.x >= width)
+        {
+            return new(0, pos.y);
+        }
+        else if (pos.x < 0 && pos.y < height && pos.y >= 0)
+        {
+            return new(width - 1, pos.y);
+        }
+        else if (pos.y >= height)
+        {
+            return new(pos.x, 0);
+        }
+        else if (pos.y < 0)
+        {
+            return new(pos.x, height-1);
+        }
+        return new(pos.x, pos.y);
+    }
+    
+    private void ResetTiles()
+    {
+        int leftBound = playerX - generationRadius;
+        int rightBound = playerX + generationRadius;
+        int bottomBound = playerY - generationRadius;
+        int topBound = playerY + generationRadius;
+
+        float playerRotationRadians = (playerRotation + 90) * Mathf.Deg2Rad;
+
+        for (int x = leftBound; x <= rightBound; x++)
+        {
+            for(int y = bottomBound; y <= topBound; y++)
+            {
+                int loopX = x;
+                if(x >= width)
+                {
+                    loopX = x - width;
+                } 
+                else if(x < 0)
+                {
+                    loopX = x + width;
+                }
+                int loopY = y;
+                if (y >= height)
+                {
+                    loopY = y - height ;
+                }
+                else if (y < 0)
+                {
+                    loopY = y + height;
+                }
+
+                Tile currTile = tiles[loopX, loopY];
+                currTile.SetState(Tile.State.Empty);
+                currTile.Decollapse();
+            }
+        }
+    }
+
     private void UpdateTiles()
     {
+
         int leftBound = playerX - generationRadius;
         int rightBound = playerX + generationRadius;
         int bottomBound = playerY - generationRadius;
@@ -101,16 +248,16 @@ public class TileManager : MonoBehaviour
             {
                 bool toCollapse = false;
                 Vector2 dirToTile = new Vector2(x-playerX, y-playerY);
-                float squareMagnitudeToTile = dirToTile.sqrMagnitude;
+                float magnitudeToTile = dirToTile.magnitude;
                 Vector2 lightDirection = new Vector2(Mathf.Cos(playerRotationRadians), Mathf.Sin(playerRotationRadians));
                 float angleFromLight = Vector2.Angle(lightDirection, dirToTile);
                 if(angleFromLight < viewAngle / 2)
                 {
-                    toCollapse = squareMagnitudeToTile < viewLimitFront * viewLimitFront;
+                    toCollapse = magnitudeToTile < viewLimitFront;
                 }
                 else
                 {
-                    toCollapse = squareMagnitudeToTile < viewLimitSide * viewLimitSide;
+                    toCollapse = magnitudeToTile < viewLimitSide;
                 }
 
                 int loopX = x;
@@ -146,9 +293,11 @@ public class TileManager : MonoBehaviour
 
             }
         }
+        
     }
 
-    public void generate(int seedX, int seedY, Tile.State seedState = Tile.State.Empty)
+
+    public void Generate(int seedX, int seedY, Tile.State seedState = Tile.State.Empty)
     {
         Debug.Log("Generating Field");
         Queue<Tile> queue = new Queue<Tile>();
@@ -156,14 +305,12 @@ public class TileManager : MonoBehaviour
         queue.Enqueue(tiles[seedX, seedY]);
         while (queue.Count > 0)
         {
-            Debug.Log(queue.Count);
             Tile currentTile = queue.Dequeue();
             if (currentTile.state == Tile.State.Empty)
             {
                 generateTile(currentTile);
             }
             Vector2Int[] newTiles = currentTile.getNeighbours();
-            Debug.Log(newTiles.Length);
             foreach (Vector2Int tilePos in newTiles)
             {
                 Tile newTile;
