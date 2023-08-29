@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public float distanceThreshold = 2;
-    public TextAsset inkJSON;
+    public float distanceThreshold = 5;
 
     private Player player;
     private void Start()
@@ -36,7 +35,8 @@ public class Interactable : MonoBehaviour
     public void OpenText()
     {
         TextManager.instance.scrollList.SetActive(true);
-        TextManager.instance.Initialize(TravellerController.instance.inkJSON);
+        TextManager.instance.Initialize(TravellerController.instance.currentTraveller.inkJSON);
+        
     }
 
 

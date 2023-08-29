@@ -7,12 +7,14 @@ using Random = Unity.Mathematics.Random;
 
 public class TravellerController : MonoBehaviour
 {
-    public TextAsset inkJSON;
+    public TravellerData currentTraveller;
+
+    public List<TravellerData> travellerData;
 
     public static TravellerController instance;
 
     [Range(0, 1)] public float SpawnProbability = 0.01f;
-    public List<GameObject> travellers;
+    public List<SpriteRenderer> travellers;
     private Tile locationTile;
     private bool alreadySpawned = false;
     private void Awake()
@@ -34,7 +36,7 @@ public class TravellerController : MonoBehaviour
             for(int j = 0; j < 3; j++)
             {
                 int index = 3 * i + j;
-                GameObject current = travellers[index];
+                GameObject current = travellers[index].gameObject;
                 current.transform.position = this.transform.position + new Vector3((i-1) * TileManager.instance.Width() * 2, (j-1) * TileManager.instance.Height() * 2);
             }
         }
@@ -43,6 +45,7 @@ public class TravellerController : MonoBehaviour
 
     public void SetTileLocation(Tile newLocation)
     {
+        SelectCurrentTraveller();
         alreadySpawned = true;
         locationTile = newLocation;
         newLocation.occupied = true;
@@ -64,4 +67,14 @@ public class TravellerController : MonoBehaviour
         locationTile = null;
         transform.position = new Vector3(TileManager.instance.Width(),TileManager.instance.Height()) * 8;
     }
+
+    private void SelectCurrentTraveller()
+    {
+        currentTraveller = travellerData[UnityEngine.Random.Range(0, travellerData.Count)];
+        foreach (var traveller in travellers)
+        {
+            traveller.sprite = currentTraveller.sprite;
+        }
+    }
+    
 }

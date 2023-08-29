@@ -6,6 +6,7 @@ using Ink.Runtime;
 
 public class TextManager : MonoBehaviour
 {
+    public bool dialogueOpen = false;
     public Button buttonPrefab;
     public Button continuePrefab;
     public Text textBox;
@@ -31,6 +32,7 @@ public class TextManager : MonoBehaviour
 
     public void Initialize(TextAsset storyJSON)
     {
+        dialogueOpen = true;
         ClearText();
         story = new Story(storyJSON.text);
         if(DataManager.instance.variablesState != null)
@@ -134,6 +136,7 @@ public class TextManager : MonoBehaviour
 
     void Finish()
     {
+        dialogueOpen = false;
         ClearText();
         DataManager.instance.variablesState = story.variablesState;
         scrollList.SetActive(false);

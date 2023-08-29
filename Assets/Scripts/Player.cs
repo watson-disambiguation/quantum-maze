@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!PauseManager.Instance.paused)
+        if (!PauseManager.Instance.paused && !TextManager.instance.dialogueOpen)
         {
             visionLight.transform.localEulerAngles = new Vector3(0, 0, rotation);
             float x = transform.position.x;
