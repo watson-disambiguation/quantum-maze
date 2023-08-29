@@ -35,8 +35,9 @@ public class Interactable : MonoBehaviour
     public void OpenText()
     {
         TextManager.instance.scrollList.SetActive(true);
-        TextManager.instance.Initialize(TravellerController.instance.currentTraveller.inkJSON);
-        
+        TextManager.instance.Initialize(TravellerController.instance.currentTraveller);
+        TravellerController.instance.currentTraveller.hasMetCurrentSpawn = true;
+
     }
 
 

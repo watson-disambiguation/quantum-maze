@@ -849,7 +849,7 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.9607843, g: 0.85882354, b: 0.6862745, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -1162,7 +1162,7 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.9622642, g: 0.85781974, b: 0.6853863, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -2147,6 +2147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1857e43b28cb53344ab2404a8d016848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sharedData: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
 --- !u!4 &1772897020
 Transform:
   m_ObjectHideFlags: 0
@@ -2535,13 +2536,19 @@ MonoBehaviour:
     name: 
     sprite: {fileID: 0}
     inkJSON: {fileID: 0}
+    timesMet: 0
+    hasMetCurrentSpawn: 0
   travellerData:
   - name: Myrtle
     sprite: {fileID: 21300000, guid: 1ce34b2aa92e93540b7968d605b659a1, type: 3}
-    inkJSON: {fileID: 4900000, guid: cf822dbaa5ddf4942bef7e4b9cf1ff11, type: 3}
-  - name: John
-    sprite: {fileID: 21300000, guid: 0ccc508108fa6ed4fa11b4a467d7f609, type: 3}
-    inkJSON: {fileID: 4900000, guid: 93679756d8fba8e40ab50001b7587b26, type: 3}
+    inkJSON: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
+    timesMet: 0
+    hasMetCurrentSpawn: 0
+  - name: Shiv
+    sprite: {fileID: 21300000, guid: 8e2b4a22a5cd12546b09dd0747661693, type: 3}
+    inkJSON: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
+    timesMet: 0
+    hasMetCurrentSpawn: 0
   SpawnProbability: 0.104
   travellers:
   - {fileID: 1419001983}

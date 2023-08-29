@@ -5,6 +5,7 @@ using Ink.Runtime;
 
 public class DataManager : MonoBehaviour
 {
+    public TextAsset sharedData;
     public VariablesState variablesState = null;
     public static DataManager instance;
 
@@ -20,6 +21,12 @@ public class DataManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+    }
+
+    private void Start()
+    {
+        var story = new Story(sharedData.text);
+        variablesState = story.variablesState;
     }
 
 }

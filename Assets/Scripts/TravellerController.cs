@@ -75,6 +75,13 @@ public class TravellerController : MonoBehaviour
         {
             traveller.sprite = currentTraveller.sprite;
         }
+
+        if (currentTraveller.hasMetCurrentSpawn)
+        {
+            currentTraveller.timesMet++;
+        }
+
+        currentTraveller.hasMetCurrentSpawn = false;
     }
     
 }

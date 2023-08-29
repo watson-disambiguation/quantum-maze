@@ -9,4 +9,6 @@ public class TravellerData
     public string name;
     public Sprite sprite;
     public TextAsset inkJSON;
+    public int timesMet;
+    public bool hasMetCurrentSpawn;
 }

@@ -30,11 +30,11 @@ public class TextManager : MonoBehaviour
         scrollList.SetActive(false);
     }
 
-    public void Initialize(TextAsset storyJSON)
+    public void Initialize(TravellerData travellerData)
     {
         dialogueOpen = true;
         ClearText();
-        story = new Story(storyJSON.text);
+        story = new Story(travellerData.inkJSON.text);
         if(DataManager.instance.variablesState != null)
         {
             foreach (var item in DataManager.instance.variablesState)
@@ -42,8 +42,28 @@ public class TextManager : MonoBehaviour
                 if(story.variablesState.GlobalVariableExistsWithName(item))
                 {
                     story.variablesState[item] = DataManager.instance.variablesState[item];
+                    Debug.Log($"{item}: {story.variablesState[item]}");
                 }
             }
+
+            foreach (var traveller in TravellerController.instance.travellerData)
+            {
+                string lowerName = traveller.name.ToLower().Trim();
+                
+                if(story.variablesState.GlobalVariableExistsWithName("times_met_" + lowerName))
+                {
+                    story.variablesState["times_met_" + lowerName] = traveller.timesMet;
+                }
+            
+                if(story.variablesState.GlobalVariableExistsWithName("has_met_" + lowerName))
+                {
+                    story.variablesState["has_met_" + lowerName] = traveller.hasMetCurrentSpawn;
+                }
+            }
+
+
+            
+            
         }
         ContinueStory();
     }
