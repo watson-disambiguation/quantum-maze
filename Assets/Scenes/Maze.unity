@@ -2147,7 +2147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1857e43b28cb53344ab2404a8d016848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedData: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
+  sharedData: {fileID: 4900000, guid: d14282ae595aa6242a9920b9e910a4dc, type: 3}
 --- !u!4 &1772897020
 Transform:
   m_ObjectHideFlags: 0
@@ -2538,15 +2538,21 @@ MonoBehaviour:
     inkJSON: {fileID: 0}
     timesMet: 0
     hasMetCurrentSpawn: 0
-  travellerData:
+  availableTravellerData:
   - name: Myrtle
     sprite: {fileID: 21300000, guid: 1ce34b2aa92e93540b7968d605b659a1, type: 3}
-    inkJSON: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
+    inkJSON: {fileID: 4900000, guid: 9eda6831713a9c64da4ed27ff1739481, type: 3}
+    timesMet: 0
+    hasMetCurrentSpawn: 0
+  allTravellerData:
+  - name: Myrtle
+    sprite: {fileID: 21300000, guid: 1ce34b2aa92e93540b7968d605b659a1, type: 3}
+    inkJSON: {fileID: 4900000, guid: 9eda6831713a9c64da4ed27ff1739481, type: 3}
     timesMet: 0
     hasMetCurrentSpawn: 0
   - name: Shiv
     sprite: {fileID: 21300000, guid: 8e2b4a22a5cd12546b09dd0747661693, type: 3}
-    inkJSON: {fileID: 4900000, guid: 5befdf33f277ad646a06c71414cdd6cd, type: 3}
+    inkJSON: {fileID: 4900000, guid: df99c97780f831048a7a8a55e50350c6, type: 3}
     timesMet: 0
     hasMetCurrentSpawn: 0
   SpawnProbability: 0.104

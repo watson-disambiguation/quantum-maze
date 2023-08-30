@@ -9,7 +9,9 @@ public class TravellerController : MonoBehaviour
 {
     public TravellerData currentTraveller;
 
-    public List<TravellerData> travellerData;
+    public List<TravellerData> availableTravellerData;
+
+    public List<TravellerData> allTravellerData;
 
     public static TravellerController instance;
 
@@ -70,7 +72,7 @@ public class TravellerController : MonoBehaviour
 
     private void SelectCurrentTraveller()
     {
-        currentTraveller = travellerData[UnityEngine.Random.Range(0, travellerData.Count)];
+        currentTraveller = availableTravellerData[UnityEngine.Random.Range(0, availableTravellerData.Count)];
         foreach (var traveller in travellers)
         {
             traveller.sprite = currentTraveller.sprite;
@@ -82,6 +84,40 @@ public class TravellerController : MonoBehaviour
         }
 
         currentTraveller.hasMetCurrentSpawn = false;
+    }
+
+    public void AddTraveller(string travellerName)
+    {
+        Debug.Log(travellerName);
+        foreach (var traveller in availableTravellerData)
+        {
+            if (traveller.name == travellerName)
+            {
+                return;
+            }
+        }
+        
+        foreach (var traveller in allTravellerData)
+        {
+            if (traveller.name == travellerName)
+            {
+                availableTravellerData.Add(traveller);
+                return;
+            }
+        }
+    }
+
+    public void RemoveTraveller(string travellerName)
+    {
+        Debug.Log(travellerName);
+        for(int i = 0; i < availableTravellerData.Count; i++)
+        {
+            if (availableTravellerData[i].name == travellerName)
+            {
+                availableTravellerData.RemoveAt(i);
+                return;
+            }
+        }
     }
     
 }

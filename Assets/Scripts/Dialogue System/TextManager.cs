@@ -35,6 +35,18 @@ public class TextManager : MonoBehaviour
         dialogueOpen = true;
         ClearText();
         story = new Story(travellerData.inkJSON.text);
+        
+        story.BindExternalFunction("addTraveller", (string travellerName) =>
+            {
+                TravellerController.instance.AddTraveller(travellerName);
+            }
+        );
+        story.BindExternalFunction("removeTraveller", (string travellerName) =>
+            {
+                TravellerController.instance.RemoveTraveller(travellerName);
+            }
+        );
+        
         if(DataManager.instance.variablesState != null)
         {
             foreach (var item in DataManager.instance.variablesState)
@@ -46,7 +58,7 @@ public class TextManager : MonoBehaviour
                 }
             }
 
-            foreach (var traveller in TravellerController.instance.travellerData)
+            foreach (var traveller in TravellerController.instance.allTravellerData)
             {
                 string lowerName = traveller.name.ToLower().Trim();
                 
