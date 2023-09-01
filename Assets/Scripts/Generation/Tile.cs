@@ -45,14 +45,14 @@ public class Tile : MonoBehaviour
         collapsed = false;
         this.x = x; 
         this.y = y;
-        this.transform.position = new Vector3(2*(float)x, 2*(float)y);
+        this.transform.position = new Vector3(2*x, 0, 2*y);
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 3; j++)
             {
                 int index = 3 * i + j;
                 FloorTile currentTile = tiles[index];
-                currentTile.transform.position = this.transform.position + new Vector3((i-1) * TileManager.instance.Width() * 2, (j-1) * TileManager.instance.Height() * 2);
+                currentTile.transform.position = this.transform.position + new Vector3((i-1) * TileManager.instance.Width() * 2, 0, (j-1) * TileManager.instance.Height() * 2);
             }
         }
         SetState(initialState);

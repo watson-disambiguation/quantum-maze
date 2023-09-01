@@ -39,7 +39,7 @@ public class TravellerController : MonoBehaviour
             {
                 int index = 3 * i + j;
                 GameObject current = travellers[index].gameObject;
-                current.transform.position = this.transform.position + new Vector3((i-1) * TileManager.instance.Width() * 2, (j-1) * TileManager.instance.Height() * 2);
+                current.transform.position = transform.position + new Vector3((i-1) * TileManager.instance.Width() * 2, 0, (j-1) * TileManager.instance.Height() * 2);
             }
         }
         Despawn();

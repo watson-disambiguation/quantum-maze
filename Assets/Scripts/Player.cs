@@ -7,13 +7,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    
     public static Player player;
     
     [SerializeField]
     private TileManager tileManager;
 
     [SerializeField]
-    private Rigidbody2D rb;
+    private Rigidbody rb;
 
     [SerializeField]
     private Camera cam;
@@ -21,10 +22,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Light2D visionLight;
 
-    [SerializeField]
-    private float speed = 10f;
+    [SerializeField] private float speed = 100f, rotationSpeed = 10f, playerHeight = 1f;
 
-    private Vector2 velocity;
+    private Vector3 velocity;
     private float rotation;
     private float mapWidth;
     private float mapHeight;
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
         {
             y++;
         }
-        transform.position = new Vector3(x, y, 0);
+        transform.position = new Vector3(x, 0, y);
 
         mapWidth = tileManager.Width() * 2;
         mapHeight = tileManager.Height() * 2;
@@ -67,20 +67,34 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!PauseManager.Instance.paused)
+        if (!PauseManager.Instance.paused  && !TextManager.instance.dialogueOpen)
         {
-            velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-            rotation = Vector2.SignedAngle(Vector2.up,(cam.ScreenToWorldPoint(Input.mousePosition)-transform.position));
+            rotation += rotationSpeed * Input.GetAxisRaw("Mouse X") * Time.deltaTime;
+            if (rotation < 0)
+            {
+                rotation += 360;
+            }
+            else if (rotation > 360)
+            {
+                rotation -= 360;
+            }
+
+            float angleRadians = rotation * Mathf.Deg2Rad;
+            Vector3 forward = new(Mathf.Sin(angleRadians), 0, Mathf.Cos(angleRadians));
+            Vector3 side = Vector3.Cross(Vector3.up,forward);
+            velocity = forward * Input.GetAxisRaw("Vertical") + side * Input.GetAxisRaw("Horizontal");
+            velocity.Normalize();
+
         }
     }
     private void FixedUpdate()
     {
         if (!PauseManager.Instance.paused && !TextManager.instance.dialogueOpen)
         {
-            visionLight.transform.localEulerAngles = new Vector3(0, 0, rotation);
+            //visionLight.transform.localEulerAngles = new Vector3(0, 0, rotation);
             float x = transform.position.x;
 
-            float y = transform.position.y;
+            float y = transform.position.z;
             if (x > mapWidth - 1)
             {
                 x -= mapWidth;
@@ -99,9 +113,12 @@ public class Player : MonoBehaviour
                 y += mapHeight;
             }
 
-            transform.position = new Vector3(x, y, 0);
-            rb.velocity = velocity * speed;
+            transform.position = new Vector3(x, playerHeight, y);
+            rb.velocity = speed * velocity;
+            transform.rotation = Quaternion.AngleAxis(rotation,Vector3.up);
         }
+
+        
     }
 
     public float getRotation()

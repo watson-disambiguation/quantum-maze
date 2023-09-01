@@ -79,7 +79,7 @@ public class TileManager : MonoBehaviour
     private void Update()
     {
         int intX = Mathf.RoundToInt(Player.player.transform.position.x / 2f);
-        int intY = Mathf.RoundToInt(Player.player.transform.position.y / 2f);
+        int intY = Mathf.RoundToInt(Player.player.transform.position.z / 2f);
         float newPlayerRotation = Player.player.getRotation();
         bool isDifferentAngle = Mathf.Abs(newPlayerRotation - playerRotation) > rotationThreshold;
         if (playerX != intX || playerY != intY || isDifferentAngle)
@@ -240,7 +240,8 @@ public class TileManager : MonoBehaviour
         int topBound = playerY + generationRadius;
 
         
-        float playerRotationRadians = (playerRotation + 90) * Mathf.Deg2Rad;
+        //For some reason this is flipped from the rotation the player needs to rotate the camera
+        float playerRotationRadians = -(playerRotation-90) * Mathf.Deg2Rad;
 
         for (int x = leftBound; x <= rightBound; x++)
         {

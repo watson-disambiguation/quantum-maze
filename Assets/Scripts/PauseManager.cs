@@ -14,7 +14,7 @@ public class PauseManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
+        Cursor.visible = false;
         pauseMenu.gameObject.SetActive(false);
         if (Instance == null)
         {
@@ -45,6 +45,7 @@ public class PauseManager : MonoBehaviour
     {
         paused = pauseState;
         pauseMenu.gameObject.SetActive(pauseState);
+        Cursor.visible = pauseState;
     }
 
 }
