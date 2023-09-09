@@ -6,26 +6,12 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public float distanceThreshold = 5;
-
-    private Player player;
-    private void Start()
-    {
-        player = FindObjectOfType<Player>();
-    }
-
-    private void OnMouseOver()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            OnHit();
-        }
-        
-    }
+    
 
     public void OnHit()
     {
         Debug.Log("Hit");
-        float distance = (player.transform.position - transform.position).magnitude;
+        float distance = (Player.player.transform.position - transform.position).magnitude;
         if(distance < distanceThreshold)
         {
             OpenText();

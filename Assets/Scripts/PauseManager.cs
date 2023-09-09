@@ -10,11 +10,12 @@ public class PauseManager : MonoBehaviour
     public bool paused = false;
     
     [SerializeField]
-    private RectTransform pauseMenu;
+    private RectTransform pauseMenu,crosshair;
     // Start is called before the first frame update
     void Awake()
     {
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         pauseMenu.gameObject.SetActive(false);
         if (Instance == null)
         {
@@ -46,6 +47,8 @@ public class PauseManager : MonoBehaviour
         paused = pauseState;
         pauseMenu.gameObject.SetActive(pauseState);
         Cursor.visible = pauseState;
+        Cursor.lockState = pauseState ? CursorLockMode.None : CursorLockMode.Locked;
+        crosshair.gameObject.SetActive(!pauseState);
     }
 
 }

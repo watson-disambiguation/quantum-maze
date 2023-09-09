@@ -17,18 +17,18 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
 
     [SerializeField]
-    private Camera cam;
-
-    [SerializeField]
     private Light2D visionLight;
 
     [SerializeField] private float speed = 100f, rotationSpeed = 10f, playerHeight = 1f;
+
+    [SerializeField] private Crosshair crosshair;
 
     private Vector3 velocity;
     private float rotation;
     private float mapWidth;
     private float mapHeight;
 
+    private Camera mainCamera;
     void Awake()
     {
         if (player == null)
@@ -39,14 +39,19 @@ public class Player : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-        if(cam == null)
+
+        if (mainCamera == null)
         {
-            cam = FindObjectOfType<Camera>();
+            mainCamera = FindObjectOfType<Camera>();
         }
         if(visionLight == null)
         {
             visionLight = FindObjectOfType<UnityEngine.Rendering.Universal.Light2D>();
+        }
+
+        if (crosshair == null)
+        {
+            crosshair = FindObjectOfType<Crosshair>();
         }
         int x = tileManager.Width();
         if(x % 2 == 1)
@@ -63,12 +68,14 @@ public class Player : MonoBehaviour
         mapWidth = tileManager.Width() * 2;
         mapHeight = tileManager.Height() * 2;
     }
+    
 
     // Update is called once per frame
     void Update()
     {
         if (!PauseManager.Instance.paused  && !TextManager.instance.dialogueOpen)
         {
+            //Control view direction
             rotation += rotationSpeed * Input.GetAxisRaw("Mouse X") * Time.deltaTime;
             if (rotation < 0)
             {
@@ -84,14 +91,15 @@ public class Player : MonoBehaviour
             Vector3 side = Vector3.Cross(Vector3.up,forward);
             velocity = forward * Input.GetAxisRaw("Vertical") + side * Input.GetAxisRaw("Horizontal");
             velocity.Normalize();
-
+            
+            RaycastInteractable();
         }
     }
     private void FixedUpdate()
     {
         if (!PauseManager.Instance.paused && !TextManager.instance.dialogueOpen)
         {
-            //visionLight.transform.localEulerAngles = new Vector3(0, 0, rotation);
+            //loop the player o they stay in the map
             float x = transform.position.x;
 
             float y = transform.position.z;
@@ -124,5 +132,23 @@ public class Player : MonoBehaviour
     public float getRotation()
     {
         return rotation;
+    }
+    
+    private void RaycastInteractable()
+    {
+
+        Vector3 origin = mainCamera.transform.position;
+        Vector3 lookDirection = mainCamera.transform.forward;
+        if (Physics.Raycast(origin, lookDirection, out RaycastHit hit))
+        {
+            bool hitInteractable =
+                hit.transform.gameObject.TryGetComponent<Interactable>(out Interactable interactable);
+            crosshair.SetOnTarget(hitInteractable);
+            if(hitInteractable)
+            {
+                
+            }
+        }
+        
     }
 }
